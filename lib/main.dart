@@ -25,8 +25,8 @@ class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
 
   var atletas = [
-    Atleta("Bruno", [2, 4, 5, 3, 5, 2, 3]),
-    Atleta("João", [3, 5, 2, 3, 4, 1, 4]),
+    Atleta("Bruno", [150, 240, 253, 300, 321, 281, 322]),
+    Atleta("João", [322, 350, 290, 339, 400, 190, 320]),
   ];
 
   @override
@@ -37,22 +37,56 @@ class MyHomePage extends StatelessWidget {
         title: Text("Charts"),
       ),
       body: Padding(
-        padding: EdgeInsets.all(8),
-        child: LineChart(
-          LineChartData(
+        padding: const EdgeInsets.all(24.0),
+        child: LineChart(LineChartData(
             minY: 0,
-            maxY: 30,
+            maxY: 600,
             minX: 0,
             maxX: 15,
             titlesData: FlTitlesData(
-              topTitles:AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-              bottomTitles: AxisTitles(axisNameWidget: Text("Voltas"), sideTitles: SideTitles(showTitles: true))
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              bottomTitles: const AxisTitles(
+                axisNameWidget: Text("Voltas"),
+                sideTitles: SideTitles(showTitles: true),
+              ),
+              leftTitles: AxisTitles(
+                axisNameWidget: const Text("Minutos"),
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: getLeftTitles,
+                ),
+              ),
             ),
-            lineBarsData: atletas.map((e) => LineChartBarData(
-                spots: e.tempos.asMap().entries.map((entry) => FlSpot(entry.key.toDouble(), entry.value)).toList()
-            )).toList()
-          )
+            lineBarsData: atletas
+                .map((e) => LineChartBarData(
+                    spots: e.tempos
+                        .asMap()
+                        .entries
+                        .map((entry) =>
+                            FlSpot(entry.key.toDouble(), entry.value))
+                        .toList()))
+                .toList())),
+      ),
+    );
+  }
+
+  Widget getLeftTitles(double value, TitleMeta meta) {
+    int minutes = value ~/ 60;
+    int seconds = (value % 60).toInt();
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: Text(
+        "$minutes:$seconds",
+        softWrap: false,
+        style: const TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
         ),
       ),
     );
